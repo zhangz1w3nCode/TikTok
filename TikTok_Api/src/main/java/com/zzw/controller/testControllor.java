@@ -1,11 +1,11 @@
-package com.zzw;
+package com.zzw.controller;
 
 import com.zzw.grace.result.GraceJSONResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class controllor {
+public class testControllor {
 
 
     @GetMapping("/test")
@@ -13,5 +13,9 @@ public class controllor {
         return GraceJSONResult.ok("Hello,Word!");
     }
 
+    @GetMapping("/hello")
+    public String tt(){
+        return "zry";
+    }
 
 }

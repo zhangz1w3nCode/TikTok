@@ -1,0 +1,6 @@
+# 项目排除路径
+/TikTok_Api/target/
+/TikTok_Common/target/
+/TikTok_Mapper/target/
+/TikTok_Model/target/
+/TikTok_Service/target/

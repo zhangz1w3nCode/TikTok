@@ -26,7 +26,7 @@
       <module name="TikTok_Generator" options="-parameters" />
       <module name="TikTok_Mapper" options="-parameters" />
       <module name="TikTok_Model" options="-parameters" />
-      <module name="TikTok_Project" options="-parameters" />
+      <module name="TikTok_Project" options="" />
       <module name="TikTok_Service" options="-parameters" />
     </option>
   </component>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.CommentMapper">
+  <resultMap id="BaseResultMap" type="com.java.pojo.Comment">
+    <constructor>
+      <idArg column="id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="vloger_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="father_comment_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="vlog_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="comment_user_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="content" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="like_counts" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vloger_id, father_comment_id, vlog_id, comment_user_id, content, like_counts, 
+    create_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from comment
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from comment
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.java.pojo.Comment">
+    insert into comment (id, vloger_id, father_comment_id, 
+      vlog_id, comment_user_id, content, 
+      like_counts, create_time)
+    values (#{id,jdbcType=VARCHAR}, #{vlogerId,jdbcType=VARCHAR}, #{fatherCommentId,jdbcType=VARCHAR}, 
+      #{vlogId,jdbcType=VARCHAR}, #{commentUserId,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{likeCounts,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.pojo.Comment">
+    insert into comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="vlogerId != null">
+        vloger_id,
+      </if>
+      <if test="fatherCommentId != null">
+        father_comment_id,
+      </if>
+      <if test="vlogId != null">
+        vlog_id,
+      </if>
+      <if test="commentUserId != null">
+        comment_user_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="likeCounts != null">
+        like_counts,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="vlogerId != null">
+        #{vlogerId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherCommentId != null">
+        #{fatherCommentId,jdbcType=VARCHAR},
+      </if>
+      <if test="vlogId != null">
+        #{vlogId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentUserId != null">
+        #{commentUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="likeCounts != null">
+        #{likeCounts,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.pojo.Comment">
+    update comment
+    <set>
+      <if test="vlogerId != null">
+        vloger_id = #{vlogerId,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherCommentId != null">
+        father_comment_id = #{fatherCommentId,jdbcType=VARCHAR},
+      </if>
+      <if test="vlogId != null">
+        vlog_id = #{vlogId,jdbcType=VARCHAR},
+      </if>
+      <if test="commentUserId != null">
+        comment_user_id = #{commentUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="likeCounts != null">
+        like_counts = #{likeCounts,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.pojo.Comment">
+    update comment
+    set vloger_id = #{vlogerId,jdbcType=VARCHAR},
+      father_comment_id = #{fatherCommentId,jdbcType=VARCHAR},
+      vlog_id = #{vlogId,jdbcType=VARCHAR},
+      comment_user_id = #{commentUserId,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      like_counts = #{likeCounts,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

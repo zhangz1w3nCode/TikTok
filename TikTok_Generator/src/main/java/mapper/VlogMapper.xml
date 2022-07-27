@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.java.dao.VlogMapper">
+  <resultMap id="BaseResultMap" type="com.java.pojo.Vlog">
+    <constructor>
+      <idArg column="id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="vloger_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="cover" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="width" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="height" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="like_counts" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="comments_counts" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="is_private" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="created_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="updated_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vloger_id, url, cover, title, width, height, like_counts, comments_counts, is_private, 
+    created_time, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vlog
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from vlog
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.java.pojo.Vlog">
+    insert into vlog (id, vloger_id, url, 
+      cover, title, width, 
+      height, like_counts, comments_counts, 
+      is_private, created_time, updated_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{vlogerId,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{cover,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{width,jdbcType=INTEGER}, 
+      #{height,jdbcType=INTEGER}, #{likeCounts,jdbcType=INTEGER}, #{commentsCounts,jdbcType=INTEGER}, 
+      #{isPrivate,jdbcType=INTEGER}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.java.pojo.Vlog">
+    insert into vlog
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="vlogerId != null">
+        vloger_id,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="cover != null">
+        cover,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="width != null">
+        width,
+      </if>
+      <if test="height != null">
+        height,
+      </if>
+      <if test="likeCounts != null">
+        like_counts,
+      </if>
+      <if test="commentsCounts != null">
+        comments_counts,
+      </if>
+      <if test="isPrivate != null">
+        is_private,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="vlogerId != null">
+        #{vlogerId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null">
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        #{width,jdbcType=INTEGER},
+      </if>
+      <if test="height != null">
+        #{height,jdbcType=INTEGER},
+      </if>
+      <if test="likeCounts != null">
+        #{likeCounts,jdbcType=INTEGER},
+      </if>
+      <if test="commentsCounts != null">
+        #{commentsCounts,jdbcType=INTEGER},
+      </if>
+      <if test="isPrivate != null">
+        #{isPrivate,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.java.pojo.Vlog">
+    update vlog
+    <set>
+      <if test="vlogerId != null">
+        vloger_id = #{vlogerId,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null">
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        width = #{width,jdbcType=INTEGER},
+      </if>
+      <if test="height != null">
+        height = #{height,jdbcType=INTEGER},
+      </if>
+      <if test="likeCounts != null">
+        like_counts = #{likeCounts,jdbcType=INTEGER},
+      </if>
+      <if test="commentsCounts != null">
+        comments_counts = #{commentsCounts,jdbcType=INTEGER},
+      </if>
+      <if test="isPrivate != null">
+        is_private = #{isPrivate,jdbcType=INTEGER},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.java.pojo.Vlog">
+    update vlog
+    set vloger_id = #{vlogerId,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      cover = #{cover,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      width = #{width,jdbcType=INTEGER},
+      height = #{height,jdbcType=INTEGER},
+      like_counts = #{likeCounts,jdbcType=INTEGER},
+      comments_counts = #{commentsCounts,jdbcType=INTEGER},
+      is_private = #{isPrivate,jdbcType=INTEGER},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -17,11 +17,11 @@ spring:
       pool-name: DataSourceHikariCP           # 连接池的名字
       max-lifetime: 18000000                  # 连接池的最大生命时长（毫秒），超时则会被释放（retired）
       connection-test-query: SELECT 1
- # redis:
-  #  host: 192.168.1.61
-   # port: 6379
-    #database: 0
-    #password: itzixi
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password: root
  # data:
   #  mongodb:
    #   uri: mongodb://root:root@192.168.1.202:27017

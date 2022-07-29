@@ -1,7 +1,7 @@
 package com.zzw.enums;
 
-import com.imooc.exceptions.GraceException;
-import com.imooc.grace.result.ResponseStatusEnum;
+import com.zzw.grace.exceptions.GraceException;
+import com.zzw.grace.result.ResponseStatusEnum;
 
 /**
  * @Desc: 修改用户信息类型 枚举

@@ -30,9 +30,9 @@ public class GraceExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public GraceJSONResult returnMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        BindingResult result = e.getBindingResult();
-        Map<String, String> map = getErrors(result);
+    public GraceJSONResult MethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        Map<String, String> map = getErrors(bindingResult);
         return GraceJSONResult.errorMap(map);
     }
 
@@ -43,15 +43,16 @@ public class GraceExceptionHandler {
         return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_MAX_SIZE_2MB_ERROR);
     }
 
-    public Map<String, String> getErrors(BindingResult result) {
-        Map<String, String> map = new HashMap<>();
-        List<FieldError> errorList = result.getFieldErrors();
-        for (FieldError ff : errorList) {
-            // 错误所对应的属性字段名
-            String field = ff.getField();
-            // 错误的信息
-            String msg = ff.getDefaultMessage();
-            map.put(field, msg);
+    public Map<String,String> getErrors(BindingResult result){
+
+        List<FieldError> errors = result.getFieldErrors();
+        Map<String,String> map = new HashMap<>();
+        for(FieldError error:errors){
+            //错误所对应的属性字段名
+            String field = error.getField();
+            //错误所对应的信息
+            String message = error.getDefaultMessage();
+            map.put(field,message);
         }
         return map;
     }

@@ -1,24 +1,24 @@
 package com.zzw.controller;
 
+import com.zzw.MinIOConfig;
 import com.zzw.ao.UsersVO;
-import com.zzw.bo.RegisterLoginBO;
 import com.zzw.bo.UpdateUserBO;
+import com.zzw.enums.FileTypeEnum;
 import com.zzw.enums.UserInfoModifyType;
+import com.zzw.grace.exceptions.GraceException;
 import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.grace.result.ResponseStatusEnum;
 import com.zzw.pojo.Users;
-import com.zzw.utils.IPUtil;
-import com.zzw.utils.SMSUtils;
+import com.zzw.utils.MinIOUtils;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.UUID;
+import java.io.IOException;
 
 @Api(tags = "用户个人中心接口")
 @RequestMapping("userInfo")
@@ -32,6 +32,8 @@ public class UserInfoController extends BaseInfoProperties {
     @Autowired
     private com.zzw.service.imp.userServiceImp userServiceImp;
 
+    @Autowired
+    private MinIOConfig minIOConfig;
 
     @GetMapping("/query")
     public Object getUserInfo(@RequestParam String userId) {
@@ -89,6 +91,39 @@ public class UserInfoController extends BaseInfoProperties {
         Users newestUsers = userServiceImp.updateUserInfo(UpdateUserBO,type);
 
         return GraceJSONResult.ok(newestUsers);
+    }
+
+
+    @PostMapping("/modifyImage")
+    public GraceJSONResult modifyImage(@RequestParam String userId,
+                              @RequestParam Integer type,
+                              MultipartFile file) throws Exception {
+
+        if(type!=FileTypeEnum.BGIMG.type&&type!=FileTypeEnum.FACE.type){
+            return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_UPLOAD_FAILD);
+        }
+
+        String bucketName = minIOConfig.getBucketName();
+        String filename = file.getOriginalFilename();
+
+        MinIOUtils.uploadFile(bucketName,filename,file.getInputStream());
+
+        String url = minIOConfig.getFileHost()+"/"+bucketName+"/"+filename;
+
+        UpdateUserBO UserBO = new UpdateUserBO();
+
+        UserBO.setId(userId);
+
+        if (type==FileTypeEnum.FACE.type){
+            UserBO.setFace(url);
+
+        }else{
+            UserBO.setBgImg(url);
+        }
+
+        Users afterSetUser = userServiceImp.updateUserInfo(UserBO);
+
+        return GraceJSONResult.ok(afterSetUser);
     }
 
 }

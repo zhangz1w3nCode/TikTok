@@ -1,5 +1,6 @@
 package com.zzw.grace.exceptions;
 
+import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.grace.result.ResponseStatusEnum;
 
 /**
@@ -7,7 +8,7 @@ import com.zzw.grace.result.ResponseStatusEnum;
  */
 public class GraceException {
 
-    public static void display(ResponseStatusEnum responseStatusEnum) {
+    public static GraceJSONResult display(ResponseStatusEnum responseStatusEnum) {
         throw new MyCustomException(responseStatusEnum);
     }
 

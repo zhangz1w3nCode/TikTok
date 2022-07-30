@@ -28,15 +28,10 @@ public class testControllor {
     }
 
     public static void main(String[] args) {
+        char c = '+';
+        boolean b = c < '(';
 
-       for (int i=0;i<100;++i){
-           new Thread(()->{
-
-               String s = String.valueOf((int)((Math.random() * 9 + 1) * 100000));
-               //System.out.println(validaCode);
-
-           }).start();
-       }
+        System.out.println(b);
     }
 
 }

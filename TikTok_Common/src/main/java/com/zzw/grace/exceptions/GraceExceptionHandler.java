@@ -1,5 +1,6 @@
 package com.zzw.grace.exceptions;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.grace.result.ResponseStatusEnum;
 import org.springframework.validation.BindingResult;
@@ -42,7 +43,13 @@ public class GraceExceptionHandler {
 //        e.printStackTrace();
         return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_MAX_SIZE_2MB_ERROR);
     }
-
+    //TokenExpiredException
+    @ExceptionHandler(TokenExpiredException.class)
+    @ResponseBody
+    public GraceJSONResult TokenExpiredException(TokenExpiredException e) {
+//        e.printStackTrace();
+        return GraceJSONResult.errorCustom(ResponseStatusEnum.TICKET_INVALID);
+    }
     public Map<String,String> getErrors(BindingResult result){
 
         List<FieldError> errors = result.getFieldErrors();

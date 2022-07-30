@@ -92,14 +92,19 @@ public class PassportController extends BaseInfoProperties {
             users = userServiceImp.creatUserIs(mobile);
         }
 
+        //通过uuid生成token
         String token = UUID.randomUUID().toString();
 
+        //用户登录成功 会生成token  可以通过业务号+手机号的key去获取
+        //todo:优化点----->1.用jwt生产token 2.改用双token去增加安全性和无感刷新
         redis.set(REDIS_USER_TOKEN+":"+users.getId(),token);
 
         redis.del(MOBILE_SMSCODE + ":" + mobile);
 
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(users,usersVO);
+
+        //用户登录成功 会生成token
         usersVO.setUserToken(token);
 
         return GraceJSONResult.ok(usersVO);
@@ -110,8 +115,6 @@ public class PassportController extends BaseInfoProperties {
     public Object logout(@RequestParam String userId){
 
         redis.del(REDIS_USER_TOKEN+":"+userId);
-
-
 
         return GraceJSONResult.ok("退出登录成功");
     }

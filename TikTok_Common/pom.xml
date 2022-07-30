@@ -95,6 +95,7 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
         </dependency>
+
         <!-- lombok 实体类中不用写 get set 构造函数 日志信息-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -107,6 +108,13 @@
             <groupId>com.tencentcloudapi</groupId>
             <artifactId>tencentcloud-sdk-java</artifactId>
             <version>3.1.270</version>
+        </dependency>
+
+        <!-- jwt相关的包 -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.18.2</version>
         </dependency>
     </dependencies>
 

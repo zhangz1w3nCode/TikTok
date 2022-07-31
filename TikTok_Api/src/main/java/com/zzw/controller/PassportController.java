@@ -1,6 +1,7 @@
 package com.zzw.controller;
 
 import com.zzw.base.BaseInfoProperties;
+import com.zzw.utils.tokenUtils;
 import com.zzw.vo.UsersVO;
 import com.zzw.bo.RegisterLoginBO;
 import com.zzw.grace.result.GraceJSONResult;
@@ -91,10 +92,12 @@ public class PassportController extends BaseInfoProperties {
 
         //通过uuid生成token
         String token = UUID.randomUUID().toString();
+        String JWTtoken = tokenUtils.generateToken(users.getId());
 
         //用户登录成功 会生成token  可以通过业务号+手机号的key去获取
         //todo:优化点----->1.用jwt生产token 2.改用双token去增加安全性和无感刷新
-        redis.set(REDIS_USER_TOKEN+":"+users.getId(),token);
+        //redis.set(REDIS_USER_TOKEN+":"+users.getId(),token);
+        redis.set(REDIS_USER_TOKEN+":"+users.getId(),JWTtoken);
 
         redis.del(MOBILE_SMSCODE + ":" + mobile);
 
@@ -102,7 +105,8 @@ public class PassportController extends BaseInfoProperties {
         BeanUtils.copyProperties(users,usersVO);
 
         //用户登录成功 会生成token
-        usersVO.setUserToken(token);
+        //usersVO.setUserToken(token);
+        usersVO.setUserToken(JWTtoken);
 
         return GraceJSONResult.ok(usersVO);
     }

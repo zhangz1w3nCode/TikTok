@@ -30,8 +30,8 @@ spring:
 
 # MinIO 配置
 minio:
-  endpoint: http://10.161.118.105:9000      # MinIO服务地址 #http://10.161.118.105:9000/
-  fileHost: http://10.161.118.105:9000      # 文件地址host
+  endpoint: http://172.20.10.13:9000      # MinIO服务地址 #http://10.161.118.105:9000/
+  fileHost: http://172.20.10.13:9000      # 文件地址host
   bucketName: test                      # 存储桶bucket名称
   accessKey: minioadmin                         # 用户名
   secretKey: minioadmin                     # 密码

@@ -3,6 +3,7 @@ package com.zzw.intercepter;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.grace.exceptions.GraceException;
 import com.zzw.grace.result.ResponseStatusEnum;
+import com.zzw.utils.tokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,8 +39,21 @@ public class UserTokenInterceptor extends BaseInfoProperties implements HandlerI
                 GraceException.display(ResponseStatusEnum.UN_LOGIN);
                 return false;
             } else {
-                // 比较token是否一致，如果不一致，表示用户在别的手机端登录
-                if (!redisToken.equalsIgnoreCase(userToken)) {
+//                // 比较token是否一致，如果不一致，表示用户在别的手机端登录
+//                if (!redisToken.equalsIgnoreCase(userToken)) {
+//                    GraceException.display(ResponseStatusEnum.TICKET_INVALID);
+//                    return false;
+//                }
+
+                String redisTokenUserID = tokenUtils.verifyToken(redisToken);
+
+//                System.out.println("--------------------------");
+//                System.out.println("redisTokenUserID:"+redisTokenUserID);
+//                System.out.println("userId:"+userId);
+//                System.out.println("--------------------------");
+
+
+                if (!redisTokenUserID.equals(userId)) {
                     GraceException.display(ResponseStatusEnum.TICKET_INVALID);
                     return false;
                 }

@@ -1,6 +1,5 @@
 package com.zzw.service.imp;
 
-import com.zzw.ao.UsersVO;
 import com.zzw.bo.UpdateUserBO;
 import com.zzw.enums.Sex;
 import com.zzw.enums.UserInfoModifyType;

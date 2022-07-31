@@ -1,10 +1,11 @@
 package com.zzw.intercepter;
 
-import com.zzw.controller.BaseInfoProperties;
+import com.zzw.base.BaseInfoProperties;
 import com.zzw.grace.exceptions.GraceException;
 import com.zzw.grace.result.ResponseStatusEnum;
 import com.zzw.utils.IPUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
+@CrossOrigin
 public class PassportInterceptor extends BaseInfoProperties implements HandlerInterceptor {
 
 

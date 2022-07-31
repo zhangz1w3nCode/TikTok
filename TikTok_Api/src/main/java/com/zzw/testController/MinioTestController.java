@@ -1,6 +1,8 @@
-package com.zzw.controller;
+package com.zzw.testController;
 
 import com.zzw.MinIOConfig;
+import com.zzw.base.BaseInfoProperties;
+
 import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.utils.MinIOUtils;
 import io.swagger.annotations.Api;

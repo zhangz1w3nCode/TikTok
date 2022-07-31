@@ -1,12 +1,11 @@
 package com.zzw.controller;
 
-import com.zzw.ao.UsersVO;
+import com.zzw.base.BaseInfoProperties;
+import com.zzw.vo.UsersVO;
 import com.zzw.bo.RegisterLoginBO;
 import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.grace.result.ResponseStatusEnum;
 import com.zzw.pojo.Users;
-import com.zzw.service.imp.userServiceImp;
-import com.zzw.service.userService;
 import com.zzw.utils.IPUtil;
 import com.zzw.utils.SMSUtils;
 import io.swagger.annotations.Api;
@@ -14,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +31,7 @@ public class PassportController extends BaseInfoProperties {
     private SMSUtils smsUtils;
 
     @Autowired
-    private com.zzw.service.imp.userServiceImp userServiceImp;
+    private com.zzw.service.userService userServiceImp;
 
 
     @PostMapping("getSMSCode")

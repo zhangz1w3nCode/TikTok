@@ -1,12 +1,10 @@
-package com.zzw.ao;
+package com.zzw.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.util.Date;
 
 @Data

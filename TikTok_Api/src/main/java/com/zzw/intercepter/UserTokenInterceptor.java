@@ -1,10 +1,11 @@
 package com.zzw.intercepter;
 
-import com.zzw.controller.BaseInfoProperties;
+import com.zzw.base.BaseInfoProperties;
 import com.zzw.grace.exceptions.GraceException;
 import com.zzw.grace.result.ResponseStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
+@CrossOrigin
 public class UserTokenInterceptor extends BaseInfoProperties implements HandlerInterceptor {
 
     @Override
@@ -26,9 +28,12 @@ public class UserTokenInterceptor extends BaseInfoProperties implements HandlerI
         System.out.println("userId:"+userId);
         System.out.println("userToken:"+userToken);
 
+
+
         // 判断header中用户id和token不能为空
         if (StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(userToken)) {
             String redisToken = redis.get(REDIS_USER_TOKEN + ":" + userId);
+            System.out.println("redisToken:"+redisToken);
             if (StringUtils.isBlank(redisToken)) {
                 GraceException.display(ResponseStatusEnum.UN_LOGIN);
                 return false;
@@ -38,6 +43,7 @@ public class UserTokenInterceptor extends BaseInfoProperties implements HandlerI
                     GraceException.display(ResponseStatusEnum.TICKET_INVALID);
                     return false;
                 }
+
             }
         } else {
             GraceException.display(ResponseStatusEnum.UN_LOGIN);

@@ -5,6 +5,7 @@ import com.zzw.bo.VlogBO;
 import com.zzw.pojo.Users;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.IndexVlogVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,5 +21,9 @@ public interface vlogService {
     //查询视频信息
     public PagedGridResult getIndexVlogList(String search, Integer page, Integer pageSize);
 
+    public IndexVlogVO getDetailByVlogId(String vlogId);
 
+    public void changeToPrivateOrPublic(String userId, String vlogId,Integer yesOrNo);
+
+    public PagedGridResult queryMyVlogList(String userId,Integer yesOrNo,Integer page, Integer pageSize);
 }

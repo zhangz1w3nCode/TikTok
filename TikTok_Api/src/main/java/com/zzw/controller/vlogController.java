@@ -3,6 +3,7 @@ package com.zzw.controller;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.RegisterLoginBO;
 import com.zzw.bo.VlogBO;
+import com.zzw.enums.YesOrNo;
 import com.zzw.grace.result.GraceJSONResult;
 import com.zzw.grace.result.ResponseStatusEnum;
 import com.zzw.pojo.Users;
@@ -67,5 +68,70 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
+    //全局搜索后-得出的视频列表--进行点击后能进入详情页面
+    @GetMapping("detail")
+    public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
+                                     @RequestParam String vlogId){
+
+
+        IndexVlogVO IndexVlogVO = vlogService.getDetailByVlogId(vlogId);
+
+        return GraceJSONResult.ok(IndexVlogVO);
+    }
+    //把视频设置为私密视频---只有自己才能把自己的视频改为私密
+    @PostMapping("changeToPrivate")
+    public GraceJSONResult changeToPrivate(@RequestParam String userId,
+                                     @RequestParam String vlogId){
+
+        vlogService.changeToPrivateOrPublic(userId,vlogId, YesOrNo.YES.type);
+
+        return GraceJSONResult.ok();
+    }
+
+    //把视频设置为私密视频---只有自己才能把自己的视频改为私密
+    @PostMapping("changeToPublic")
+    public GraceJSONResult changeToPublic(@RequestParam String userId,
+                                           @RequestParam String vlogId){
+
+        vlogService.changeToPrivateOrPublic(userId,vlogId, YesOrNo.NO.type);
+
+        return GraceJSONResult.ok();
+    }
+
+
+
+    //我的作品--我的公开视频
+    @GetMapping("myPublicList")
+    public GraceJSONResult myPublicList(@RequestParam String userId,
+                                        @RequestParam Integer page,
+                                        @RequestParam Integer pageSize){
+
+        if(page==null) page = COMMON_START_PAGE;
+
+        if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
+
+
+        PagedGridResult pagedGridResult = vlogService.queryMyVlogList(userId,YesOrNo.NO.type,page, pageSize);
+
+        return GraceJSONResult.ok(pagedGridResult);
+    }
+
+    //我的作品--我的私密视频
+    @GetMapping("myPrivateList")
+    public GraceJSONResult myPrivateList(@RequestParam String userId,
+                                        @RequestParam Integer page,
+                                        @RequestParam Integer pageSize){
+
+        if(page==null) page = COMMON_START_PAGE;
+
+        if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
+
+
+        PagedGridResult pagedGridResult = vlogService.queryMyVlogList(userId,YesOrNo.YES.type,page, pageSize);
+
+        return GraceJSONResult.ok(pagedGridResult);
+    }
+
+
 
 }

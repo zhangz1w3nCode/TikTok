@@ -16,11 +16,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Service
 public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
@@ -63,5 +62,50 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         PagedGridResult pagedGridResult = setterPagedGrid(indexVlogList, page);
 
         return pagedGridResult;
+    }
+
+    @Override
+    public IndexVlogVO getDetailByVlogId(String vlogId) {
+
+        Map<String,Object> map = new HashMap<>();
+
+        map.put("vlogId",vlogId);
+
+        List<IndexVlogVO> detailByVlogIdList = vlogMapperDIY.getDetailByVlogId(map);
+
+        if(detailByVlogIdList.size()>0&&detailByVlogIdList!=null&&!detailByVlogIdList.isEmpty()){
+
+            IndexVlogVO vlogVO = detailByVlogIdList.get(0);
+
+            return vlogVO;
+
+        }
+
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public void changeToPrivateOrPublic(String userId, String vlogId, Integer yesOrNo) {
+        Example example = new Example(Vlog.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id",vlogId);
+        criteria.andEqualTo("vlogerId",userId);
+        Vlog vlog = new Vlog();
+        vlog.setIsPrivate(yesOrNo);
+        vlogMapper.updateByExampleSelective(vlog,example);
+    }
+
+    @Override
+    public PagedGridResult queryMyVlogList(String userId, Integer yesOrNo, Integer page, Integer pageSize) {
+        Example example = new Example(Vlog.class);
+        Example.Criteria criteria = example.createCriteria();
+
+        criteria.andEqualTo("vlogerId",userId);
+        criteria.andEqualTo("isPrivate",yesOrNo);
+        PageHelper.startPage(page,pageSize);
+        List<Vlog> vlogList = vlogMapper.selectByExample(example);
+        PagedGridResult res = setterPagedGrid(vlogList, page);
+        return res;
     }
 }

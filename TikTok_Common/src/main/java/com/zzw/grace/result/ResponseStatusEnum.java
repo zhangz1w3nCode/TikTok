@@ -12,7 +12,7 @@ public enum ResponseStatusEnum {
 
     // 50x
     UN_LOGIN(501,false,"请登录后再继续操作！"),
-    TICKET_INVALID(502,false,"会话失效，请重新登录！"),
+    TICKET_INVALID(502,false,"Token过期，请重新登录！"),
     NO_AUTH(503,false,"您的权限不足，无法继续操作！"),
     MOBILE_ERROR(504,false,"短信发送失败，请稍后重试！"),
     SMS_NEED_WAIT_ERROR(505,false,"短信发送太快啦~请稍后再试！"),

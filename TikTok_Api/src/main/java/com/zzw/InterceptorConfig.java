@@ -29,7 +29,9 @@ public class InterceptorConfig implements WebMvcConfigurer {
                     .addPathPatterns("/passport/getSMSCode");
            registry.addInterceptor(userTokenInterceptor())
                 .addPathPatterns("/userInfo/modifyUserInfo")
-                .addPathPatterns("/userInfo/modifyImage");
+                .addPathPatterns("/userInfo/modifyImage")
+                   .addPathPatterns("/vlog/myPublicList")
+                   .addPathPatterns("/vlog/myPrivateList");
 
     }
 

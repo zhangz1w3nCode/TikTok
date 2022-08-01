@@ -40,21 +40,14 @@ public class UserTokenInterceptor extends BaseInfoProperties implements HandlerI
                 return false;
             } else {
 //                // 比较token是否一致，如果不一致，表示用户在别的手机端登录
-//                if (!redisToken.equalsIgnoreCase(userToken)) {
-//                    GraceException.display(ResponseStatusEnum.TICKET_INVALID);
-//                    return false;
-//                }
+//
 
                 String redisTokenUserID = tokenUtils.verifyToken(redisToken);
 
-//                System.out.println("--------------------------");
-//                System.out.println("redisTokenUserID:"+redisTokenUserID);
-//                System.out.println("userId:"+userId);
-//                System.out.println("--------------------------");
-
-
                 if (!redisTokenUserID.equals(userId)) {
+
                     GraceException.display(ResponseStatusEnum.TICKET_INVALID);
+
                     return false;
                 }
 

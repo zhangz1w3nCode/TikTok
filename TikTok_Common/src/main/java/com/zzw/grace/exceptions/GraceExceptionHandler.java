@@ -48,7 +48,7 @@ public class GraceExceptionHandler {
     @ResponseBody
     public GraceJSONResult TokenExpiredException(TokenExpiredException e) {
         e.printStackTrace();
-        return GraceJSONResult.errorCustom(ResponseStatusEnum.FILE_MAX_SIZE_2MB_ERROR);
+        return GraceJSONResult.errorCustom(ResponseStatusEnum.TICKET_INVALID);
     }
     public Map<String,String> getErrors(BindingResult result){
 

@@ -71,11 +71,13 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
             String vlogId = vo.getVlogId();
 
             String vlogerId = vo.getVlogerId();
-
+            //查看用户是否点赞了视频--每个页面都要显示
             if(StringUtils.isNotBlank(userId)){
-
                 vo.setDoILikeThisVlog(doILikeThisVlog(userId,vlogId));
+            }
 
+            if(StringUtils.isNotBlank(vlogId)){
+                vo.setLikeCounts(getVlogLikeCount(vlogId));
             }
 
         }
@@ -85,6 +87,8 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         return pagedGridResult;
     }
 
+
+    //去redis查询-用户是否点赞视频
     private boolean doILikeThisVlog(String userId,String vlogId){
         String userLikeVlog = redis.get(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
 
@@ -93,8 +97,20 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         if(StringUtils.isNotBlank(userLikeVlog)&&userLikeVlog.equalsIgnoreCase("1")){
                 doILike=true;
         }
-
+//
         return doILike;
+
+    }
+
+    //去redis查询-用户是否点赞视频
+    public Integer getVlogLikeCount(String vlogId){
+        String VlogLikeCount = redis.get(REDIS_VLOG_BE_LIKED_COUNTS + ":" + vlogId);
+
+        if(StringUtils.isBlank(VlogLikeCount)){
+            VlogLikeCount="0";
+        }
+
+        return Integer.parseInt(VlogLikeCount);
 
     }
 
@@ -159,5 +175,16 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         myLikedVlog.setVlogId(vlogId);
         myLikedVlog.setUserId(userId);
         myLikedVlogMapper.delete(myLikedVlog);
+    }
+
+
+    @Override
+    public PagedGridResult getMyLikedList(String userId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page,pageSize);
+        Map<String,Object> map = new HashMap<>();
+        map.put("userId",userId);
+        List<IndexVlogVO> likedList = vlogMapperDIY.getMyLikedList(map);
+        PagedGridResult res = setterPagedGrid(likedList, page);
+        return res;
     }
 }

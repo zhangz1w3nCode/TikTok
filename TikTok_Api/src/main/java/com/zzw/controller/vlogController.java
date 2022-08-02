@@ -51,7 +51,6 @@ public class vlogController extends BaseInfoProperties {
 
     //获取视频信息列表 通过关键字进行模糊搜索-
     //todo 可以使用es去优化 因为 这里用了 'like %xxxx%' 无法用索引;
-
     @GetMapping("indexList")
     public GraceJSONResult indexList(@RequestParam String userId,
                                      @RequestParam(defaultValue = "") String search,
@@ -62,7 +61,6 @@ public class vlogController extends BaseInfoProperties {
         PagedGridResult pagedGridResult = vlogService.getIndexVlogList(userId,search, page, pageSize);
         return GraceJSONResult.ok(pagedGridResult);
     }
-
     //全局搜索后-得出的视频列表--进行点击后能进入详情页面
     @GetMapping("detail")
     public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
@@ -82,7 +80,6 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-
     //把视频设置为私密视频---只有自己才能把自己的视频改为私密
     @PostMapping("changeToPublic")
     public GraceJSONResult changeToPublic(@RequestParam String userId,
@@ -92,7 +89,6 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-
     //我的作品--我的公开视频
     @GetMapping("myPublicList")
     public GraceJSONResult myPublicList(@RequestParam String userId,
@@ -108,7 +104,6 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
-
     //我的作品--我的私密视频
     @GetMapping("myPrivateList")
     public GraceJSONResult myPrivateList(@RequestParam String userId,
@@ -124,7 +119,20 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
+    @GetMapping("myLikedList")
+    public GraceJSONResult myLikedList(@RequestParam String userId,
+                                         @RequestParam Integer page,
+                                         @RequestParam Integer pageSize){
 
+        if(page==null) page = COMMON_START_PAGE;
+
+        if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
+
+
+        PagedGridResult pagedGridResult = vlogService.getMyLikedList(userId,page, pageSize);
+
+        return GraceJSONResult.ok(pagedGridResult);
+    }
     //点赞
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,
@@ -144,7 +152,6 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-
     //取消点赞
     @PostMapping("unlike")
     public GraceJSONResult userUnlikeVlog(@RequestParam String userId,
@@ -164,6 +171,15 @@ public class vlogController extends BaseInfoProperties {
         redis.del(REDIS_USER_LIKE_VLOG+":"+userId+":"+vlogId);
 
         return GraceJSONResult.ok();
+    }
+    //获得视频点赞总数--每次刷到视频就去查询 点赞记录
+    @PostMapping("totalLikedCounts")
+    public GraceJSONResult totalLikedCounts(@RequestParam String vlogId){
+
+        //mysql
+        Integer total = vlogService.getVlogLikeCount(vlogId);
+
+        return GraceJSONResult.ok(total);
     }
 
 }

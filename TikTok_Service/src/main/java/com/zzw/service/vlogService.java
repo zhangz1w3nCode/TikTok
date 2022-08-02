@@ -32,4 +32,7 @@ public interface vlogService {
 
     public PagedGridResult queryMyVlogList(String userId,Integer yesOrNo,Integer page, Integer pageSize);
 
+    Integer getVlogLikeCount(String vlogId);
+
+    PagedGridResult getMyLikedList(String userId, Integer page, Integer pageSize);
 }

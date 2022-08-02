@@ -26,7 +26,7 @@ public interface vlogService {
     //查询视频信息
     public PagedGridResult getIndexVlogList(String userId,String search, Integer page, Integer pageSize);
 
-    public IndexVlogVO getDetailByVlogId(String vlogId);
+    public IndexVlogVO getDetailByVlogId(String userId,String vlogId);
 
     public void changeToPrivateOrPublic(String userId, String vlogId,Integer yesOrNo);
 
@@ -36,4 +36,5 @@ public interface vlogService {
 
     PagedGridResult getMyLikedList(String userId, Integer page, Integer pageSize);
     PagedGridResult getMyFollowList(String myId, Integer page, Integer pageSize);
+    PagedGridResult getMyFriendList(String myId, Integer page, Integer pageSize);
 }

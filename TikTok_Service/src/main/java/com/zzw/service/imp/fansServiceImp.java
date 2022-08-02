@@ -164,4 +164,5 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
 
         return res;
     }
+
 }

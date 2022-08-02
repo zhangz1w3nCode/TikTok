@@ -77,9 +77,15 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
             String vlogerId = vo.getVlogerId();
             //查看用户是否点赞了视频--每个页面都要显示
             if(StringUtils.isNotBlank(userId)){
+                //用户是否关注博主判断
+                boolean doIFollow = fansService.queryDoIFollowVloger(userId, vlogerId);
+                vo.setDoIFollowVloger(doIFollow);
+
+                //判断用户是否点赞了视频
                 vo.setDoILikeThisVlog(doILikeThisVlog(userId,vlogId));
             }
 
+            //获得当前视频被点赞的总数
             if(StringUtils.isNotBlank(vlogId)){
                 vo.setLikeCounts(getVlogLikeCount(vlogId));
             }
@@ -91,6 +97,28 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         return pagedGridResult;
     }
 
+
+    public IndexVlogVO setterVO(IndexVlogVO vo ,String userId){
+        String vlogId = vo.getVlogId();
+
+        String vlogerId = vo.getVlogerId();
+        //查看用户是否点赞了视频--每个页面都要显示
+        if(StringUtils.isNotBlank(userId)){
+            //用户是否关注博主判断
+            boolean doIFollow = fansService.queryDoIFollowVloger(userId, vlogerId);
+            vo.setDoIFollowVloger(doIFollow);
+
+            //判断用户是否点赞了视频
+            vo.setDoILikeThisVlog(doILikeThisVlog(userId,vlogId));
+        }
+
+        //获得当前视频被点赞的总数
+        if(StringUtils.isNotBlank(vlogId)){
+            vo.setLikeCounts(getVlogLikeCount(vlogId));
+        }
+
+        return vo;
+    }
 
     //去redis查询-用户是否点赞视频
     private boolean doILikeThisVlog(String userId,String vlogId){
@@ -119,7 +147,7 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
     }
 
     @Override
-    public IndexVlogVO getDetailByVlogId(String vlogId) {
+    public IndexVlogVO getDetailByVlogId(String userId,String vlogId) {
 
         Map<String,Object> map = new HashMap<>();
 
@@ -131,8 +159,7 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
             IndexVlogVO vlogVO = detailByVlogIdList.get(0);
 
-            return vlogVO;
-
+            return setterVO(vlogVO, userId);
         }
 
         return null;
@@ -206,9 +233,37 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
             //查看用户是否点赞了视频--每个页面都要显示
             if(StringUtils.isNotBlank(myId)){
                 //用户是否关注博主判断
-                boolean doIFollow = fansService.queryDoIFollowVloger(myId, vlogerId);
+                vo.setDoIFollowVloger(true);
 
-                vo.setDoIFollowVloger(doIFollow);
+                //用户是否点赞了视频
+                vo.setDoILikeThisVlog(doILikeThisVlog(myId,vlogId));
+            }
+
+            if(StringUtils.isNotBlank(vlogId)){
+                vo.setLikeCounts(getVlogLikeCount(vlogId));
+            }
+
+        }
+        PagedGridResult res = setterPagedGrid(myFollowList, page);
+        return res;
+    }
+
+    @Override
+    public PagedGridResult getMyFriendList(String myId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page,pageSize);
+        Map<String,Object> map = new HashMap<>();
+        map.put("myId",myId);
+        List<IndexVlogVO> myFollowList = vlogMapperDIY.getMyFriendList(map);
+        for(IndexVlogVO vo:myFollowList){
+
+            String vlogId = vo.getVlogId();
+
+            String vlogerId = vo.getVlogerId();
+            //查看用户是否点赞了视频--每个页面都要显示
+            if(StringUtils.isNotBlank(myId)){
+
+
+                vo.setDoIFollowVloger(true);
 
                 //用户是否点赞了视频
                 vo.setDoILikeThisVlog(doILikeThisVlog(myId,vlogId));

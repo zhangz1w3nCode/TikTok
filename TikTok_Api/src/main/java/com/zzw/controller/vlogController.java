@@ -63,11 +63,11 @@ public class vlogController extends BaseInfoProperties {
     }
     //全局搜索后-得出的视频列表--进行点击后能进入详情页面
     @GetMapping("detail")
-    public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
+    public GraceJSONResult detail(@RequestParam(defaultValue = "") String userId,
                                      @RequestParam String vlogId){
 
 
-        IndexVlogVO IndexVlogVO = vlogService.getDetailByVlogId(vlogId);
+        IndexVlogVO IndexVlogVO = vlogService.getDetailByVlogId(userId,vlogId);
 
         return GraceJSONResult.ok(IndexVlogVO);
     }
@@ -80,7 +80,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-    //把视频设置为私密视频---只有自己才能把自己的视频改为私密
+    //把视频设置为公开---只有自己才能把自己的视频改为私密
     @PostMapping("changeToPublic")
     public GraceJSONResult changeToPublic(@RequestParam String userId,
                                            @RequestParam String vlogId){
@@ -104,7 +104,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
-    //我的作品--我的私密视频
+    //我的作品--我的私密视频---私密
     @GetMapping("myPrivateList")
     public GraceJSONResult myPrivateList(@RequestParam String userId,
                                         @RequestParam Integer page,
@@ -119,7 +119,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
-    //我的喜欢列表
+    //我的喜欢列表---赞过
     @GetMapping("myLikedList")
     public GraceJSONResult myLikedList(@RequestParam String userId,
                                          @RequestParam Integer page,
@@ -134,7 +134,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
-    //我的关注列表
+    //我的关注人发布的视频--关注
     @GetMapping("followList")
     public GraceJSONResult followList(@RequestParam String myId,
                                        @RequestParam Integer page,
@@ -149,6 +149,20 @@ public class vlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(pagedGridResult);
     }
 
+    //我的互粉朋友发送的视频---朋友
+    @GetMapping("friendList")
+    public GraceJSONResult friendList(@RequestParam String myId,
+                                      @RequestParam Integer page,
+                                      @RequestParam Integer pageSize){
+
+        if(page==null) page = COMMON_START_PAGE;
+
+        if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
+
+        PagedGridResult pagedGridResult = vlogService.getMyFriendList(myId,page, pageSize);
+
+        return GraceJSONResult.ok(pagedGridResult);
+    }
 
     //点赞
     @PostMapping("like")

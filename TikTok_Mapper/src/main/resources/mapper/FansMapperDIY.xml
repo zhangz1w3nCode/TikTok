@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzw.mapper.FansMapperDIY" >
+    <select id="getMyFollowList" parameterType="map" resultType="com.zzw.vo.VlogerVO">
+        SELECT
+
+            u.id as vlogerId,
+            u.face as face,
+            u.nickname as nickname
+
+        FROM
+            fans f
+        LEFT JOIN
+            users u
+        ON
+            f.vloger_id = u.id
+        WHERE
+            f.fan_id = #{paramMap.myId}
+        ORDER BY
+            u.nickname
+        ASC
+    </select>
+    <!--查询 我的 粉丝-->
+    <select id="getMyFansList" parameterType="map" resultType="com.zzw.vo.FansVO">
+        SELECT
+            u.id as fanId,
+            u.face as face,
+            u.nickname as nickname
+        FROM
+            fans f
+        LEFT JOIN
+            users u
+        ON
+            f.fan_id= u.id
+        WHERE
+            f.vloger_id = #{paramMap.myId}
+        ORDER BY
+            u.nickname
+        ASC
+    </select>
+
+</mapper>

@@ -1,11 +1,14 @@
 package com.zzw.service.imp;
 
 import com.github.pagehelper.PageHelper;
+import com.tencentcloudapi.cbs.v20170312.models.Price;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.VlogBO;
 import com.zzw.enums.YesOrNo;
+import com.zzw.mapper.MyLikedVlogMapper;
 import com.zzw.mapper.VlogMapper;
 import com.zzw.mapper.VlogMapperDIY;
+import com.zzw.pojo.MyLikedVlog;
 import com.zzw.pojo.Vlog;
 import com.zzw.service.vlogService;
 import com.zzw.utils.PagedGridResult;
@@ -28,6 +31,9 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
     @Autowired
     private VlogMapper vlogMapper;
+
+    @Autowired
+    private MyLikedVlogMapper myLikedVlogMapper;
 
     @Autowired
     private  Sid sid;
@@ -107,5 +113,23 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         List<Vlog> vlogList = vlogMapper.selectByExample(example);
         PagedGridResult res = setterPagedGrid(vlogList, page);
         return res;
+    }
+    @Transactional
+    @Override
+    public void userLikedVlog(String userId, String vlogId) {
+        MyLikedVlog myLikedVlog = new MyLikedVlog();
+        String id = sid.nextShort();
+        myLikedVlog.setId(id);
+        myLikedVlog.setVlogId(vlogId);
+        myLikedVlog.setUserId(userId);
+        int resCode = myLikedVlogMapper.insert(myLikedVlog);
+    }
+    @Transactional
+    @Override
+    public void userUnlikeVlog(String userId, String vlogId) {
+        MyLikedVlog myLikedVlog = new MyLikedVlog();
+        myLikedVlog.setVlogId(vlogId);
+        myLikedVlog.setUserId(userId);
+        myLikedVlogMapper.delete(myLikedVlog);
     }
 }

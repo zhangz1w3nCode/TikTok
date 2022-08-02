@@ -132,6 +132,46 @@ public class vlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(pagedGridResult);
     }
 
+    //点赞
+    @PostMapping("like")
+    public GraceJSONResult like(@RequestParam String userId,
+                                @RequestParam String vlogerId,
+                                @RequestParam String vlogId){
+        //todo 根据id 查询 用户是否存在 博主是否存在 视频是否存在
 
+        //mysql
+        vlogService.userLikedVlog(userId,vlogId);
+
+        //redis 点赞后视频和视频发布者都+1
+        redis.increment(REDIS_VLOG_BE_LIKED_COUNTS+":"+vlogId,1);
+        redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS+":"+vlogerId,1);
+
+
+        //关联关系  -- 用户喜欢哪个 视频
+        redis.set(REDIS_USER_LIKE_VLOG+":"+userId+":"+vlogId,"1");
+
+        return GraceJSONResult.ok();
+    }
+
+    //取消点赞
+    @PostMapping("unlike")
+    public GraceJSONResult userUnlikeVlog(@RequestParam String userId,
+                                @RequestParam String vlogerId,
+                                @RequestParam String vlogId){
+        //todo 根据id 查询 用户是否存在 博主是否存在 视频是否存在
+
+        //mysql
+        vlogService.userUnlikeVlog(userId,vlogId);
+
+        //redis 点赞后视频和视频发布者都+1
+        redis.decrement(REDIS_VLOG_BE_LIKED_COUNTS+":"+vlogId,1);
+        redis.decrement(REDIS_VLOGER_BE_LIKED_COUNTS+":"+vlogerId,1);
+
+
+        //关联关系  -- 用户喜欢哪个 视频
+        redis.del(REDIS_USER_LIKE_VLOG+":"+userId+":"+vlogId);
+
+        return GraceJSONResult.ok();
+    }
 
 }

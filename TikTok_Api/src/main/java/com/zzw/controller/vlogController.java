@@ -63,9 +63,8 @@ public class vlogController extends BaseInfoProperties {
     }
     //全局搜索后-得出的视频列表--进行点击后能进入详情页面
     @GetMapping("detail")
-    public GraceJSONResult detail(@RequestParam(defaultValue = "") String userId,
-                                     @RequestParam String vlogId){
-
+    public GraceJSONResult detail(@RequestParam(defaultValue ="") String userId,
+                                  @RequestParam String vlogId){
 
         IndexVlogVO IndexVlogVO = vlogService.getDetailByVlogId(userId,vlogId);
 

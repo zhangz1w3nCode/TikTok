@@ -11,4 +11,9 @@ public interface commentService {
 
     //创建一个评论
     public CommentVO creatComment(CommentBO commentBO);
+
+    //获取评论
+    public PagedGridResult getCommentList(String userId,String vlogId,Integer page, Integer pageSize);
+
+    void deleteComment(String commentUserId, String commentId, String vlogId);
 }

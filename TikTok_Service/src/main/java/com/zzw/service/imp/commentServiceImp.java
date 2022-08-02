@@ -7,6 +7,7 @@ import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.CommentMapper;
 import com.zzw.mapper.FansMapper;
 import com.zzw.mapper.FansMapperDIY;
+import com.zzw.mapper.commentMapperDIY;
 import com.zzw.pojo.Comment;
 import com.zzw.pojo.Fans;
 import com.zzw.service.commentService;
@@ -34,7 +35,8 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
     @Autowired
     private CommentMapper CommentMapper;
 
-
+    @Autowired
+    private com.zzw.mapper.commentMapperDIY commentMapperDIY;
     @Autowired
     private  Sid sid;
 
@@ -70,7 +72,56 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
         return commentVO;
     }
 
+    @Override
+    public PagedGridResult getCommentList(String userId,String vlogId, Integer page, Integer pageSize) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("vlogId",vlogId);
+
+        PageHelper.startPage(page,pageSize);
+
+        List<CommentVO> commentList = commentMapperDIY.getCommentList(map);
+
+        for(CommentVO cv :commentList){
 
 
+            //获取评论总数
+            String commentCount = redis.get(REDIS_VLOG_COMMENT_LIKED_COUNTS + ":" + cv.getCommentId());
+            int commentNum=0;
 
+            if(StringUtils.isNotBlank(commentCount)){
+                 commentNum = Integer.parseInt(commentCount);
+            }
+
+            cv.setLikeCounts(commentNum);
+
+            //用户是否对视频点赞
+            String doILikeComment = redis.get(REDIS_USER_LIKE_COMMENT + ":" + userId + ":" + cv.getCommentId());
+
+            if(StringUtils.isNotBlank(doILikeComment)&&doILikeComment.equalsIgnoreCase("1")){
+
+                cv.setIsLike(YesOrNo.YES.type);
+
+            }
+
+        }
+
+        PagedGridResult res = setterPagedGrid(commentList, page);
+
+        return res;
+    }
+
+    @Override
+    public void deleteComment(String commentUserId, String commentId, String vlogId) {
+
+        Comment comment = new Comment();
+        comment.setCommentUserId(commentUserId);
+        comment.setId(commentId);
+
+
+        //删除数据库--删除缓存
+        int code = CommentMapper.delete(comment);
+
+        //点赞数量-1
+        redis.decrement(REDIS_VLOG_COMMENT_COUNTS+":"+vlogId,1);
+    }
 }

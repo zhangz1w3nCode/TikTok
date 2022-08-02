@@ -54,20 +54,48 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
     }
 
     @Override
-    public PagedGridResult getIndexVlogList(String search,Integer page,Integer pageSize) {
+    public PagedGridResult getIndexVlogList(String userId,String search,Integer page,Integer pageSize) {
 
         PageHelper.startPage(page,pageSize);
 
         Map<String,Object> map = new HashMap<>();
+
         if(StringUtils.isNotBlank(search)){
             map.put("search",search);
         }
 
         List<IndexVlogVO> indexVlogList = vlogMapperDIY.getIndexVlogList(map);
 
+        for(IndexVlogVO vo:indexVlogList){
+
+            String vlogId = vo.getVlogId();
+
+            String vlogerId = vo.getVlogerId();
+
+            if(StringUtils.isNotBlank(userId)){
+
+                vo.setDoILikeThisVlog(doILikeThisVlog(userId,vlogId));
+
+            }
+
+        }
+
         PagedGridResult pagedGridResult = setterPagedGrid(indexVlogList, page);
 
         return pagedGridResult;
+    }
+
+    private boolean doILikeThisVlog(String userId,String vlogId){
+        String userLikeVlog = redis.get(REDIS_USER_LIKE_VLOG + ":" + userId + ":" + vlogId);
+
+        boolean doILike =false;
+
+        if(StringUtils.isNotBlank(userLikeVlog)&&userLikeVlog.equalsIgnoreCase("1")){
+                doILike=true;
+        }
+
+        return doILike;
+
     }
 
     @Override

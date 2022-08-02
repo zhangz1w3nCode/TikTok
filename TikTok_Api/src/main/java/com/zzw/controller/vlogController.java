@@ -49,25 +49,20 @@ public class vlogController extends BaseInfoProperties {
         return GraceJSONResult.ok("上传视频成功");
     }
 
-
-
     //获取视频信息列表 通过关键字进行模糊搜索-
     //todo 可以使用es去优化 因为 这里用了 'like %xxxx%' 无法用索引;
 
     @GetMapping("indexList")
-    public GraceJSONResult indexList(@RequestParam(defaultValue = "") String search,
+    public GraceJSONResult indexList(@RequestParam String userId,
+                                     @RequestParam(defaultValue = "") String search,
                                      @RequestParam Integer page,
                                      @RequestParam Integer pageSize){
-
         if(page==null) page = COMMON_START_PAGE;
-
         if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
-
-
-        PagedGridResult pagedGridResult = vlogService.getIndexVlogList(search, page, pageSize);
-
+        PagedGridResult pagedGridResult = vlogService.getIndexVlogList(userId,search, page, pageSize);
         return GraceJSONResult.ok(pagedGridResult);
     }
+
     //全局搜索后-得出的视频列表--进行点击后能进入详情页面
     @GetMapping("detail")
     public GraceJSONResult indexList(@RequestParam(defaultValue = "") String userId,
@@ -97,8 +92,6 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-
-
 
     //我的作品--我的公开视频
     @GetMapping("myPublicList")
@@ -141,7 +134,6 @@ public class vlogController extends BaseInfoProperties {
 
         //mysql
         vlogService.userLikedVlog(userId,vlogId);
-
         //redis 点赞后视频和视频发布者都+1
         redis.increment(REDIS_VLOG_BE_LIKED_COUNTS+":"+vlogId,1);
         redis.increment(REDIS_VLOGER_BE_LIKED_COUNTS+":"+vlogerId,1);

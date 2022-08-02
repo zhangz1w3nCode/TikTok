@@ -24,7 +24,7 @@ public interface vlogService {
     public void userUnlikeVlog(String userId, String vlogId);
 
     //查询视频信息
-    public PagedGridResult getIndexVlogList(String search, Integer page, Integer pageSize);
+    public PagedGridResult getIndexVlogList(String userId,String search, Integer page, Integer pageSize);
 
     public IndexVlogVO getDetailByVlogId(String vlogId);
 

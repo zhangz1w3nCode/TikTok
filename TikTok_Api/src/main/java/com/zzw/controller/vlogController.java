@@ -163,7 +163,7 @@ public class vlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(pagedGridResult);
     }
 
-    //点赞
+    //点赞视频
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,
                                 @RequestParam String vlogerId,
@@ -182,7 +182,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok();
     }
-    //取消点赞
+    //取消点赞视频
     @PostMapping("unlike")
     public GraceJSONResult userUnlikeVlog(@RequestParam String userId,
                                 @RequestParam String vlogerId,

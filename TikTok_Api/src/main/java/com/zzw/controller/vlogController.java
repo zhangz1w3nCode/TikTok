@@ -119,6 +119,7 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
+    //我的喜欢列表
     @GetMapping("myLikedList")
     public GraceJSONResult myLikedList(@RequestParam String userId,
                                          @RequestParam Integer page,
@@ -133,6 +134,22 @@ public class vlogController extends BaseInfoProperties {
 
         return GraceJSONResult.ok(pagedGridResult);
     }
+    //我的关注列表
+    @GetMapping("followList")
+    public GraceJSONResult followList(@RequestParam String myId,
+                                       @RequestParam Integer page,
+                                       @RequestParam Integer pageSize){
+
+        if(page==null) page = COMMON_START_PAGE;
+
+        if(pageSize ==null) pageSize  =COMMON_PAGE_SIZE;
+
+        PagedGridResult pagedGridResult = vlogService.getMyFollowList(myId,page, pageSize);
+
+        return GraceJSONResult.ok(pagedGridResult);
+    }
+
+
     //点赞
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,

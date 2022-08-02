@@ -10,6 +10,7 @@ import com.zzw.mapper.VlogMapper;
 import com.zzw.mapper.VlogMapperDIY;
 import com.zzw.pojo.MyLikedVlog;
 import com.zzw.pojo.Vlog;
+import com.zzw.service.fansService;
 import com.zzw.service.vlogService;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.IndexVlogVO;
@@ -34,6 +35,9 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
     @Autowired
     private MyLikedVlogMapper myLikedVlogMapper;
+
+    @Autowired
+    private com.zzw.service.fansService fansService;
 
     @Autowired
     private  Sid sid;
@@ -185,6 +189,37 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         map.put("userId",userId);
         List<IndexVlogVO> likedList = vlogMapperDIY.getMyLikedList(map);
         PagedGridResult res = setterPagedGrid(likedList, page);
+        return res;
+    }
+
+    @Override
+    public PagedGridResult getMyFollowList(String myId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page,pageSize);
+        Map<String,Object> map = new HashMap<>();
+        map.put("myId",myId);
+        List<IndexVlogVO> myFollowList = vlogMapperDIY.getMyFollowList(map);
+        for(IndexVlogVO vo:myFollowList){
+
+            String vlogId = vo.getVlogId();
+
+            String vlogerId = vo.getVlogerId();
+            //查看用户是否点赞了视频--每个页面都要显示
+            if(StringUtils.isNotBlank(myId)){
+                //用户是否关注博主判断
+                boolean doIFollow = fansService.queryDoIFollowVloger(myId, vlogerId);
+
+                vo.setDoIFollowVloger(doIFollow);
+
+                //用户是否点赞了视频
+                vo.setDoILikeThisVlog(doILikeThisVlog(myId,vlogId));
+            }
+
+            if(StringUtils.isNotBlank(vlogId)){
+                vo.setLikeCounts(getVlogLikeCount(vlogId));
+            }
+
+        }
+        PagedGridResult res = setterPagedGrid(myFollowList, page);
         return res;
     }
 }

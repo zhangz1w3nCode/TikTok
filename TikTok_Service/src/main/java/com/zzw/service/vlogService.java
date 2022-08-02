@@ -35,4 +35,5 @@ public interface vlogService {
     Integer getVlogLikeCount(String vlogId);
 
     PagedGridResult getMyLikedList(String userId, Integer page, Integer pageSize);
+    PagedGridResult getMyFollowList(String myId, Integer page, Integer pageSize);
 }

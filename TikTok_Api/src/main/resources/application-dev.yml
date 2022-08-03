@@ -22,10 +22,10 @@ spring:
     port: 6379
     database: 0
     password: root
- # data:
-  #  mongodb:
-   #   uri: mongodb://root:root@192.168.1.202:27017
-    #  database: imooc-red-book
+  data:
+    mongodb:
+      uri: mongodb://root:root@172.20.10.13:27017
+      database: TikTok
 
 
 # MinIO 配置

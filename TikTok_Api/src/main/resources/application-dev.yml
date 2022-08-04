@@ -27,7 +27,7 @@ spring:
       uri: mongodb://root:root@172.20.10.13:27017
       database: TikTok
   rabbitmq:
-    host: 172.20.10.13
+    host: 127.0.0.1
     port: 5672
     username: admin
     password: admin

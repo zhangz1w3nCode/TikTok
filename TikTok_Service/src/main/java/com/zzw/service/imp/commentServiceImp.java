@@ -99,6 +99,7 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
         if(StringUtils.isNotBlank(commentBO.getFatherCommentId())&&!commentBO.getFatherCommentId().equalsIgnoreCase("0")){
             type = MessageEnum.REPLY_YOU.type;
             typeStr = MessageEnum.REPLY_YOU.value;
+
         }
 
         //回复完对方后-要把回复信息 发送给对方

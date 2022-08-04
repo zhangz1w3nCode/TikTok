@@ -50,6 +50,8 @@ public class fansController extends BaseInfoProperties {
 
         fansService.creatFans(myId,vlogerId);
 
+
+
         //关注博主后-页面的 粉丝-关注也要改变----用redis去做
         //我的关注+1 然后博主的粉丝+1
         redis.increment (REDIS_MY_FOLLOWS_COUNTS+":"+myId,1);

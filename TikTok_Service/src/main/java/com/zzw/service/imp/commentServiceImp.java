@@ -3,27 +3,20 @@ package com.zzw.service.imp;
 import com.github.pagehelper.PageHelper;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.CommentBO;
+import com.zzw.enums.MessageEnum;
 import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.CommentMapper;
-import com.zzw.mapper.FansMapper;
-import com.zzw.mapper.FansMapperDIY;
-import com.zzw.mapper.commentMapperDIY;
 import com.zzw.pojo.Comment;
-import com.zzw.pojo.Fans;
+import com.zzw.pojo.Vlog;
 import com.zzw.service.commentService;
-import com.zzw.service.fansService;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.CommentVO;
-import com.zzw.vo.FansVO;
-import com.zzw.vo.VlogerVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +30,12 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
 
     @Autowired
     private com.zzw.mapper.commentMapperDIY commentMapperDIY;
+
+    @Autowired
+    private com.zzw.mapper.VlogMapper vlogMapper;
+
+    @Autowired
+    private com.zzw.service.msgService msgService;
     @Autowired
     private  Sid sid;
 
@@ -68,6 +67,30 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
         CommentVO commentVO = new CommentVO();
 
         BeanUtils.copyProperties(comment,commentVO);
+
+
+
+        Vlog vlog = vlogMapper.selectByPrimaryKey(commentBO.getVlogId());
+
+        String cover = vlog.getCover();
+
+        String commentContent = commentBO.getContent();
+
+        Map<String,String> map = new HashMap();
+
+        map.put("vlogId",vlog.getId());
+        map.put("vlogCover",cover);
+        map.put("commentId",Id);
+        map.put("commentContent",commentContent);
+
+        int type=MessageEnum.COMMENT_VLOG.type;
+
+        if(StringUtils.isNotBlank(commentBO.getFatherCommentId())&&!commentBO.getFatherCommentId().equalsIgnoreCase("0")){
+            type = MessageEnum.REPLY_YOU.type;
+        }
+
+        //回复完对方后-要把回复信息 发送给对方
+        msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
 
         return commentVO;
     }

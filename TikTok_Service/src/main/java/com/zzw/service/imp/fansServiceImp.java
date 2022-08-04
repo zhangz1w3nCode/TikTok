@@ -3,6 +3,7 @@ package com.zzw.service.imp;
 import com.github.pagehelper.PageHelper;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.VlogBO;
+import com.zzw.enums.MessageEnum;
 import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.FansMapper;
 import com.zzw.mapper.FansMapperDIY;
@@ -11,6 +12,7 @@ import com.zzw.mapper.VlogMapperDIY;
 import com.zzw.pojo.Fans;
 import com.zzw.pojo.Vlog;
 import com.zzw.service.fansService;
+import com.zzw.service.msgService;
 import com.zzw.service.vlogService;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.FansVO;
@@ -38,6 +40,8 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
     @Autowired
     private FansMapperDIY fansMapperDIY;
 
+    @Autowired
+    private com.zzw.service.msgService msgService;
 
     @Autowired
     private  Sid sid;
@@ -47,6 +51,7 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
     @Override
     public void creatFans(String myId, String vlogerId) {//我 关注 别人  -- 我是粉丝
         String Id = sid.nextShort();
+
         Fans fans = new Fans();
 
         fans.setId(Id);
@@ -54,17 +59,25 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
         fans.setVlogerId(vlogerId);
 
         fans.setFanId(myId);
-            //看我的粉丝列表
+
+        //看我的粉丝列表
         Fans myFans = queryFansRelationship(myId,vlogerId);
 
         if(myFans!=null){
               fans.setIsFanFriendOfMine(YesOrNo.YES.type);
             myFans.setIsFanFriendOfMine(YesOrNo.YES.type);
             fansMapper.updateByPrimaryKeySelective(myFans);
-          }else{
+        }else{
             fans.setIsFanFriendOfMine(YesOrNo.NO.type);
-          }
+        }
+
+        //我关注了别人--别人的粉丝是我
         fansMapper.insert(fans);
+
+        //关注了别人-发送消息到mongodb-通知对方 关注了他
+        msgService.creatMsg(myId,vlogerId, MessageEnum.FOLLOW_YOU.type,null);
+
+
     }
 
 

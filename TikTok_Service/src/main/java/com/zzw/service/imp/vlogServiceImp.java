@@ -1,16 +1,15 @@
 package com.zzw.service.imp;
 
 import com.github.pagehelper.PageHelper;
-import com.tencentcloudapi.cbs.v20170312.models.Price;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.VlogBO;
+import com.zzw.enums.MessageEnum;
 import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.MyLikedVlogMapper;
 import com.zzw.mapper.VlogMapper;
 import com.zzw.mapper.VlogMapperDIY;
 import com.zzw.pojo.MyLikedVlog;
 import com.zzw.pojo.Vlog;
-import com.zzw.service.fansService;
 import com.zzw.service.vlogService;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.IndexVlogVO;
@@ -38,6 +37,9 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
     @Autowired
     private com.zzw.service.fansService fansService;
+
+    @Autowired
+    private com.zzw.service.msgService msgService;
 
     @Autowired
     private  Sid sid;
@@ -197,7 +199,21 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         myLikedVlog.setId(id);
         myLikedVlog.setVlogId(vlogId);
         myLikedVlog.setUserId(userId);
+        //点赞记录存入数据库
         int resCode = myLikedVlogMapper.insert(myLikedVlog);
+        //同时 点赞后 发送消息给 对应用户
+
+        Vlog vlog = vlogMapper.selectByPrimaryKey(vlogId);
+
+        String vlogerId = vlog.getVlogerId();
+        String cover = vlog.getCover();
+
+        Map<String,String> map = new HashMap();
+
+        map.put("vlogId",vlogId);
+        map.put("vlogCover",cover);
+
+        msgService.creatMsg(userId,vlogerId, MessageEnum.LIKE_VLOG.type,map);
     }
     @Transactional
     @Override
@@ -207,8 +223,6 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         myLikedVlog.setUserId(userId);
         myLikedVlogMapper.delete(myLikedVlog);
     }
-
-
     @Override
     public PagedGridResult getMyLikedList(String userId, Integer page, Integer pageSize) {
         PageHelper.startPage(page,pageSize);

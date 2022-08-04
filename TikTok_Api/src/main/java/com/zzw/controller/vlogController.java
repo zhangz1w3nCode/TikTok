@@ -14,6 +14,7 @@ import com.zzw.utils.SMSUtils;
 import com.zzw.vo.IndexVlogVO;
 import com.zzw.vo.UsersVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -163,7 +164,7 @@ public class vlogController extends BaseInfoProperties {
         return GraceJSONResult.ok(pagedGridResult);
     }
 
-    //点赞视频
+    @ApiOperation("点赞视频操作")
     @PostMapping("like")
     public GraceJSONResult like(@RequestParam String userId,
                                 @RequestParam String vlogerId,

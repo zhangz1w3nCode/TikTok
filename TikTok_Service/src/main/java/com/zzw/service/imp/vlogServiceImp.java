@@ -8,13 +8,17 @@ import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.MyLikedVlogMapper;
 import com.zzw.mapper.VlogMapper;
 import com.zzw.mapper.VlogMapperDIY;
+import com.zzw.mo.messageMO;
 import com.zzw.pojo.MyLikedVlog;
 import com.zzw.pojo.Vlog;
+import com.zzw.rabbitmqConfig;
 import com.zzw.service.vlogService;
+import com.zzw.utils.JsonUtils;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.IndexVlogVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +47,9 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
 
     @Autowired
     private  Sid sid;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
 
     @Transactional
     @Override
@@ -201,7 +208,12 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         myLikedVlog.setUserId(userId);
         //点赞记录存入数据库
         int resCode = myLikedVlogMapper.insert(myLikedVlog);
-        //同时 点赞后 发送消息给 对应用户
+
+
+
+
+        //FIXME 同时 点赞后 发送消息给 对应用户---消息进入mongodb
+        //TODO 可以优化
 
         Vlog vlog = vlogMapper.selectByPrimaryKey(vlogId);
 
@@ -213,7 +225,20 @@ public class vlogServiceImp extends BaseInfoProperties implements vlogService {
         map.put("vlogId",vlogId);
         map.put("vlogCover",cover);
 
-        msgService.creatMsg(userId,vlogerId, MessageEnum.LIKE_VLOG.type,map);
+        //msgService.creatMsg(userId,vlogerId, MessageEnum.LIKE_VLOG.type,map);
+
+        messageMO msg = new messageMO();
+        msg.setFromUserId(userId);
+        msg.setToUserId(vlogerId);
+        msg.setMsgContent(map);
+
+        //消息对象转换成字符串
+        String msgstr = JsonUtils.objectToJson(msg);
+
+        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
+                ,"system.msg."+MessageEnum.LIKE_VLOG.value
+                ,msgstr);
+
     }
     @Transactional
     @Override

@@ -6,13 +6,18 @@ import com.zzw.bo.CommentBO;
 import com.zzw.enums.MessageEnum;
 import com.zzw.enums.YesOrNo;
 import com.zzw.mapper.CommentMapper;
+import com.zzw.mo.messageMO;
 import com.zzw.pojo.Comment;
+import com.zzw.pojo.Users;
 import com.zzw.pojo.Vlog;
+import com.zzw.rabbitmqConfig;
 import com.zzw.service.commentService;
+import com.zzw.utils.JsonUtils;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.CommentVO;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +40,15 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
     private com.zzw.mapper.VlogMapper vlogMapper;
 
     @Autowired
+    private com.zzw.mapper.UsersMapper UsersMapper;
+
+    @Autowired
     private com.zzw.service.msgService msgService;
     @Autowired
     private  Sid sid;
 
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
 
     @Transactional
     @Override
@@ -84,13 +94,29 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
         map.put("commentContent",commentContent);
 
         int type=MessageEnum.COMMENT_VLOG.type;
+        String typeStr=MessageEnum.COMMENT_VLOG.value;
 
         if(StringUtils.isNotBlank(commentBO.getFatherCommentId())&&!commentBO.getFatherCommentId().equalsIgnoreCase("0")){
             type = MessageEnum.REPLY_YOU.type;
+            typeStr = MessageEnum.REPLY_YOU.value;
         }
 
         //回复完对方后-要把回复信息 发送给对方
-        msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
+        //msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
+
+        messageMO msg = new messageMO();
+        msg.setFromUserId(commentBO.getCommentUserId());
+        msg.setToUserId(commentBO.getVlogerId());
+        msg.setMsgContent(map);
+
+        //消息对象转换成字符串
+        String msgstr = JsonUtils.objectToJson(msg);
+
+        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
+                ,"system.msg."+typeStr
+                ,msgstr);
+
+
 
         return commentVO;
     }
@@ -146,5 +172,39 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
 
         //点赞数量-1
         redis.decrement(REDIS_VLOG_COMMENT_COUNTS+":"+vlogId,1);
+    }
+
+    @Override
+    public void addToMongoDB(String commentId, String userId) {
+
+        Comment comment = CommentMapper.selectByPrimaryKey(commentId);
+
+        Vlog vlog = vlogMapper.selectByPrimaryKey(comment.getVlogId());
+
+        Users users = UsersMapper.selectByPrimaryKey(userId);
+
+        String cover = vlog.getCover();
+
+        String commentContent = comment.getContent();
+
+        Map<String,String> map = new HashMap();
+
+        map.put("vlogId",vlog.getId());
+        map.put("vlogCover",cover);
+        map.put("commentId",commentId);
+        map.put("commentContent",commentContent);
+
+
+        messageMO msg = new messageMO();
+        msg.setFromUserId(comment.getCommentUserId());
+        msg.setToUserId(comment.getVlogerId());
+        msg.setMsgContent(map);
+
+        //消息对象转换成字符串
+        String msgstr = JsonUtils.objectToJson(msg);
+
+        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
+                ,"system.msg."+MessageEnum.LIKE_COMMENT.value
+                ,msgstr);
     }
 }

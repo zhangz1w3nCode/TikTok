@@ -31,6 +31,7 @@ public class rabbitmqTestController extends BaseInfoProperties {
     @ApiOperation("测试发送消息到mq到接口")
     @GetMapping("mqsent")
     public GraceJSONResult creatComment(String msg){
+        //消息的发送
         String exchange = rabbitmqConfig.EXCHANGE_MSG;
         rabbitTemplate.convertAndSend(exchange,"system.msg.sent","我爱曾如玉");
         return GraceJSONResult.ok();

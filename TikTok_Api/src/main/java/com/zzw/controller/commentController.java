@@ -90,6 +90,8 @@ public class commentController extends BaseInfoProperties {
     public GraceJSONResult like(@RequestParam String commentId,
                                   @RequestParam String userId){
         //纯redis 操作 不涉及数据库
+
+        commentService.addToMongoDB(commentId,userId);
         //这条评论的总数
         redis.increment(REDIS_VLOG_COMMENT_LIKED_COUNTS+":"+commentId,1);
         //哪个用户点赞了这条评论

@@ -1,6 +1,8 @@
 package com.zzw.service.imp;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.rabbitmq.tools.json.JSONUtil;
 import com.zzw.base.BaseInfoProperties;
 import com.zzw.bo.VlogBO;
 import com.zzw.enums.MessageEnum;
@@ -9,11 +11,16 @@ import com.zzw.mapper.FansMapper;
 import com.zzw.mapper.FansMapperDIY;
 import com.zzw.mapper.VlogMapper;
 import com.zzw.mapper.VlogMapperDIY;
+import com.zzw.mo.messageMO;
 import com.zzw.pojo.Fans;
+import com.zzw.pojo.Users;
 import com.zzw.pojo.Vlog;
+import com.zzw.rabbitmqConfig;
 import com.zzw.service.fansService;
 import com.zzw.service.msgService;
+import com.zzw.service.userService;
 import com.zzw.service.vlogService;
+import com.zzw.utils.JsonUtils;
 import com.zzw.utils.PagedGridResult;
 import com.zzw.vo.FansVO;
 import com.zzw.vo.IndexVlogVO;
@@ -25,7 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +52,14 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
     @Autowired
     private com.zzw.service.msgService msgService;
 
+
+    @Autowired
+    private com.zzw.service.userService userService;
     @Autowired
     private  Sid sid;
+
+    @Autowired
+    public RabbitTemplate rabbitTemplate;
 
 
     @Transactional
@@ -74,10 +89,27 @@ public class fansServiceImp extends BaseInfoProperties implements fansService {
         //我关注了别人--别人的粉丝是我
         fansMapper.insert(fans);
 
-        //关注了别人-发送消息到mongodb-通知对方 关注了他
-        msgService.creatMsg(myId,vlogerId, MessageEnum.FOLLOW_YOU.type,null);
+        //TODO--可以用消息队列去降低耦合度---关注了别人-发送消息到mongodb-通知对方 关注了他
+        //msgService.creatMsg(myId,vlogerId, MessageEnum.FOLLOW_YOU.type,null);
 
 
+        //把入库到mongodb的操作 让 mq去慢慢消费--因为 消息模块不是核心功能
+
+        //构建消息对象
+        messageMO messageMO = new messageMO();
+        Users user =userService.queryUserInfo(myId);
+        messageMO.setFromUserId(myId);
+        messageMO.setToUserId(vlogerId);
+        messageMO.setFromNickname(user.getNickname());
+        messageMO.setFromFace(user.getFace());
+
+
+        //消息对象转换成字符串
+        String msg = JsonUtils.objectToJson(messageMO);
+
+        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
+                        ,"system.msg."+MessageEnum.FOLLOW_YOU.value
+                        ,msg);
     }
 
 

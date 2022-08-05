@@ -105,6 +105,8 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
         //回复完对方后-要把回复信息 发送给对方
         //msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
 
+
+        //mq优化
         messageMO msg = new messageMO();
         msg.setFromUserId(commentBO.getCommentUserId());
         msg.setToUserId(commentBO.getVlogerId());

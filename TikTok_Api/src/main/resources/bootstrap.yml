@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: TikTok-Nacos
+  cloud:
+    nacos:
+      config:
+        server-addr: 172.20.10.13:8848   # nacos 所在的地址
+        file-extension: yaml

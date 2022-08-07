@@ -1,5 +1,5 @@
 server:
-  port: ${port:8088}
+  port: 8088
 
 spring:
   datasource:                                     # 数据源的相关配置
@@ -34,19 +34,19 @@ spring:
     virtual-host: TikTok
   #application:
    #  name: TikTok-Nacos
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 172.20.10.13:8848   # nacos 所在的地址
+  #cloud:
+    #nacos:
+      #discovery:
+        #server-addr: 172.20.10.13:8848   # nacos 所在的地址
 
   #counts: 100
 
   # 打开监控
-management:
-  endpoint:
-    web:
-      exposure:
-        include: '*'
+#management:
+  #endpoint:
+    #web:
+      #exposure:
+        #include: '*'
 
 # MinIO 配置
 minio:

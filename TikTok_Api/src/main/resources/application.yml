@@ -5,8 +5,8 @@ server:
     max-swallow-size: -1
 
 spring:
-  application:
-    name: TikTok-Nacos
+  #application:
+    #name: TikTok-Nacos
   profiles:
     active: dev
   #banner:

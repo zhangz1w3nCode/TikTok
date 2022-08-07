@@ -102,22 +102,22 @@ public class commentServiceImp extends BaseInfoProperties implements commentServ
 
         }
 
-        //回复完对方后-要把回复信息 发送给对方
-        //msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
+        //todo:回复完对方后-要把回复信息 发送给对方
+        msgService.creatMsg(commentBO.getCommentUserId(),commentBO.getVlogerId(),type,map);
 
 
         //mq优化
-        messageMO msg = new messageMO();
-        msg.setFromUserId(commentBO.getCommentUserId());
-        msg.setToUserId(commentBO.getVlogerId());
-        msg.setMsgContent(map);
-
-        //消息对象转换成字符串
-        String msgstr = JsonUtils.objectToJson(msg);
-
-        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
-                ,"system.msg."+typeStr
-                ,msgstr);
+//        messageMO msg = new messageMO();
+//        msg.setFromUserId(commentBO.getCommentUserId());
+//        msg.setToUserId(commentBO.getVlogerId());
+//        msg.setMsgContent(map);
+//
+//        //消息对象转换成字符串
+//        String msgstr = JsonUtils.objectToJson(msg);
+//
+//        rabbitTemplate.convertAndSend(rabbitmqConfig.EXCHANGE_MSG
+//                ,"system.msg."+typeStr
+//                ,msgstr);
 
 
 

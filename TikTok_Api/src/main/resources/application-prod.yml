@@ -1,12 +1,12 @@
 server:
-  port: 8080
+  port: 8089
 
 spring:
   datasource:                                     # 数据源的相关配置
-    type: com.zaxxer.hikari.HikariDataSource      # 数据源的类型，可以更改为其他的数据源配置，比如druid
-    driver-class-name: com.mysql.jdbc.Driver      # mysql/MariaDB 的数据库驱动类名称
-    url: jdbc:mysql://192.168.1.6:3306/TikTok_Project?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
-    username: root
+    #type: com.zaxxer.hikari.HikariDataSource      # 数据源的类型，可以更改为其他的数据源配置，比如druid
+    driver-class-name: com.mysql.cj.jdbc.Driver      # mysql/MariaDB 的数据库驱动类名称
+    url: jdbc:mysql://172.24.50.101:3306/tiktok_project?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: TikTok_Project
     password: ASDFGHJKL
     hikari:
       connection-timeout: 30000               # 等待连接池分配连接的最大时间（毫秒），超过这个时长还没有可用的连接，则会抛出SQLException
@@ -17,23 +17,43 @@ spring:
       pool-name: DataSourceHikariCP           # 连接池的名字
       max-lifetime: 18000000                  # 连接池的最大生命时长（毫秒），超时则会被释放（retired）
       connection-test-query: SELECT 1
-  #redis:
-    #host: 192.168.1.61
-    #port: 6379
-    #database: 0
-    #password: itzixi
-  #data:
-   # mongodb:
-    #  uri: mongodb://root:root@192.168.1.202:27017
-     # database: imooc-red-book
+  redis:
+    host: 172.24.50.101
+    port: 6379
+    database: 0
+    password: root
+  data:
+    mongodb:
+      uri: mongodb://root:ASDFGHJKL@172.24.50.101
+      database: TikTok
+  rabbitmq:
+    host: 172.24.50.101
+    port: 5672
+    username: zzw
+    password: zzw
+    virtual-host: TikTok
+      #application:
+      #  name: TikTok-Nacos
+      #cloud:
+      #nacos:
+      #discovery:
+      #server-addr: 172.20.10.13:8848   # nacos 所在的地址
 
+      #counts: 100
+
+      # 打开监控
+      #management:
+      #endpoint:
+      #web:
+      #exposure:
+    #include: '*'
 
 # MinIO 配置
-#minio:
- # endpoint: http://192.168.1.61:9000      # MinIO服务地址
-  #fileHost: http://192.168.1.61:9000      # 文件地址host
-  #bucketName: imooc                      # 存储桶bucket名称
- # accessKey: imooc                         # 用户名
- # secretKey: imooc123456                     # 密码
-  #imgSize: 1024                           # 图片大小限制，单位：m
-  #fileSize: 1024                          # 文件大小限制，单位：m
+minio:
+  endpoint: http://106.14.35.137:9000      # MinIO服务地址 #http://10.161.118.105:9000/
+  fileHost: http://106.14.35.137:9000      # 文件地址host
+  bucketName: tiktok                    # 存储桶bucket名称
+  accessKey: minioadmin                         # 用户名
+  secretKey: minioadmin                     # 密码
+  imgSize: 1024                           # 图片大小限制，单位：m
+  fileSize: 1024                          # 文件大小限制，单位：m
